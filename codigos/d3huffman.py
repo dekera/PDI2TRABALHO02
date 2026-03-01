@@ -41,10 +41,9 @@ for nome in imagens:
     resultados.append({
         "Imagem": nomes[i],
         "Tempo (s)": tempo,
-        "Taxa de Compressão": taxa_compressao,
-        "bpp": bpp,
         "Bits da Original": bits_original,
-        "Bits da Comprimida": compressed_bits
+        "Bits da Comprimida": compressed_bits,
+        "Taxa de Compressão": taxa_compressao
     })
     i+=1
 # Criar tabela final
