@@ -3,10 +3,8 @@ import time
 import pandas as pd
 import numpy as np
 
-# ==============================
 # LZW (compressão) para sequência de inteiros 0..255
 # Retorna: bits_total_comprimidos, quantidade_de_codigos
-# ==============================
 def lzw_compress_bits(data):
     dictionary = {(i,): i for i in range(256)}
     next_code = 256
@@ -63,9 +61,9 @@ for caminho in imagens:
     else:
         bits_original = img.size * 8
 
-    # ==============================
+
     # Compressão LZW (por canal se RGB)
-    # ==============================
+
     inicio = time.perf_counter()
 
     if img.ndim == 3 and img.shape[2] >= 3:
