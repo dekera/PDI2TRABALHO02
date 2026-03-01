@@ -130,7 +130,7 @@ Total de bits produzidos pelo algoritmo.
 ### 3️ Taxa de Compressão
 
 [
-Taxa = \frac{Bits_{original}}{Bits_{comprimida}}
+Taxa = Bits_original/Bits_{comprimida
 ]
 
 Interpretação:
