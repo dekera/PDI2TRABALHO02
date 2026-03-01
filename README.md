@@ -201,10 +201,6 @@ Formato das tabelas:
 
 ---
 
-## Autor
-
-Projeto desenvolvido para disciplina de Processamento Digital de Imagens.
+Projeto desenvolvido para disciplina de Processamento Digital de Imagens 2.
 
 ---
-
-Se você quiser, posso agora adicionar uma seção de **Análise e Discussão dos Resultados** já estruturada para relatório técnico.
