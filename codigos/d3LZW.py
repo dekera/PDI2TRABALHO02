@@ -3,49 +3,37 @@ import time
 import pandas as pd
 import numpy as np
 
+# ==============================
 # LZW (compressão) para sequência de inteiros 0..255
-# Retorna: bits_total_comprimidos, quantidade_de_codigo
+# Retorna: bits_total_comprimidos, quantidade_de_codigos
+# ==============================
 def lzw_compress_bits(data):
-    # inicializa dicionário com todos os símbolos possíveis (0..255)
-    dictionary = { (i,): i for i in range(256) }
+    dictionary = {(i,): i for i in range(256)}
+    next_code = 256
+    w = ()
+    codes = []
 
-    next_code = 256  # próximo código disponível (após 0..255)
-    max_code = 255   # maior código já usado no dicionário
-
-    w = ()  # sequência atual (tupla)
-    codes = []  # lista de códigos gerados
-
-    for k in data:  # percorre cada símbolo da entrada
-        wk = w + (k,)  # tenta estender a sequência atual com o símbolo k
-        if wk in dictionary:  # se já existe no dicionário
-            w = wk  # mantém a sequência maior
+    for k in data:
+        wk = w + (k,)
+        if wk in dictionary:
+            w = wk
         else:
-            # emite o código da sequência atual w
             if w != ():
                 codes.append(dictionary[w])
             else:
-                # caso raro no começo (w vazio), emite o próprio símbolo
                 codes.append(dictionary[(k,)])
 
-            # adiciona a nova sequência wk no dicionário
             dictionary[wk] = next_code
-            max_code = next_code  # atualiza o maior código
-            next_code += 1  # incrementa para o próximo código
-
-            # reinicia w com o símbolo atual
+            next_code += 1
             w = (k,)
 
-    # emite o último w se existir
     if w != ():
         codes.append(dictionary[w])
 
-    # Cálculo de bits comprimidos
-    # bits por código cresce conforme o dicionário cresce
     bits_total = 0
-    # maior código começa em 255 (8 bits); com 256 precisa de 9 bits, etc.
     for c in codes:
-        bits_por_codigo = max(8, int(np.ceil(np.log2(c + 1))))  # bits mínimos para representar c
-        bits_total += bits_por_codigo  # soma no total
+        bits_por_codigo = max(8, int(np.ceil(np.log2(c + 1))))
+        bits_total += bits_por_codigo
 
     return bits_total, len(codes)
 
@@ -60,30 +48,52 @@ resultados = []
 nomes = ["RGB", "Binária", "Pancromática"]
 i = 0
 
-for nome in imagens:
+for caminho in imagens:
 
-    # leitura da imagem em escala de cinza (mantive como você fez)
-    img = cv2.imread(nome, cv2.IMREAD_GRAYSCALE)
+    # lê a imagem mantendo os canais
+    img = cv2.imread(caminho, cv2.IMREAD_UNCHANGED)
 
     if img is None:
-        print(f"Erro ao carregar {nome}")
+        print(f"Erro ao carregar {caminho}")
         continue
 
-    pixels = img.flatten().tolist()
+    # bits originais
+    if img.ndim == 3 and img.shape[2] >= 3:
+        bits_original = img.shape[0] * img.shape[1] * 24
+    else:
+        bits_original = img.size * 8
 
-    bits_original = img.size * 8  # 8 bits por pixel (grayscale)
-
-    # inicia contagem de tempo
+    # ==============================
+    # Compressão LZW (por canal se RGB)
+    # ==============================
     inicio = time.perf_counter()
 
-    compressed_bits, num_codes = lzw_compress_bits(pixels)
+    if img.ndim == 3 and img.shape[2] >= 3:
+        compressed_bits_total = 0
+        num_codes_total = 0
+
+        for c in range(3):
+            canal = img[:, :, c]
+            pixels = canal.flatten().tolist()
+
+            bits_canal, num_codes_canal = lzw_compress_bits(pixels)
+
+            compressed_bits_total += bits_canal
+            num_codes_total += num_codes_canal
+
+        compressed_bits = compressed_bits_total
+        num_codes = num_codes_total
+
+    else:
+        canal = img
+        pixels = canal.flatten().tolist()
+
+        compressed_bits, num_codes = lzw_compress_bits(pixels)
 
     fim = time.perf_counter()
 
     tempo = fim - inicio
-
     taxa_compressao = bits_original / compressed_bits if compressed_bits > 0 else np.nan
-    bpp = compressed_bits / img.size
 
     resultados.append({
         "Imagem": nomes[i],
@@ -96,11 +106,9 @@ for nome in imagens:
 
     i += 1
 
-# Criar tabela final
 df = pd.DataFrame(resultados)
 
 print("\nTabela Final (LZW):\n")
 print(df)
 
-# salvar CSV
 df.to_csv(r"D:\carto\PDI2\TRABALHO02\tabelas\lzw_lena.csv", index=False)

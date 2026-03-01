@@ -5,39 +5,66 @@ import pandas as pd
 import numpy as np
 
 # Lista das imagens
-imagens = [r"D:\carto\PDI2\TRABALHO02\imagens_originais\lena-Color.png", r"D:\carto\PDI2\TRABALHO02\imagens_geradas\lena_binaria.jpg", r"D:\carto\PDI2\TRABALHO02\imagens_geradas\lena_cinza.jpg"]
+imagens = [
+    r"D:\carto\PDI2\TRABALHO02\imagens_originais\lena-Color.png",
+    r"D:\carto\PDI2\TRABALHO02\imagens_geradas\lena_binaria.jpg",
+    r"D:\carto\PDI2\TRABALHO02\imagens_geradas\lena_cinza.jpg"
+]
 
 resultados = []
-nomes= ["RGB", "Binária","Pancromática"]
-i=0
-for nome in imagens:
+nomes = ["RGB", "Binária", "Pancromática"]
+i = 0
 
-    # leitura da imagem em escala de cinza
-    img = cv2.imread(nome, cv2.IMREAD_GRAYSCALE)
+for caminho in imagens:
+
+    # lê a imagem mantendo os canais (BGR se for colorida)
+    img = cv2.imread(caminho, cv2.IMREAD_UNCHANGED)
 
     if img is None:
-        print(f"Erro ao carregar {nome}")
+        print(f"Erro ao carregar {caminho}")
         continue
 
-    pixels = img.flatten().tolist()
+    # Define bits originais conforme o tipo
+    if img.ndim == 3 and img.shape[2] >= 3:
+        # RGB (na verdade BGR no OpenCV): 3 canais de 8 bits -> 24 bpp
+        bits_original = img.shape[0] * img.shape[1] * 24
+    else:
+        # grayscale/binária: 8 bpp
+        bits_original = img.size * 8
 
-    bits_original = img.size * 8  # 8 bits por pixel (grayscale)
-
-    # inicia contagem de tempo
+    # Compressão Huffman (por canal se RGB)
     inicio = time.perf_counter()
 
-    codec = HuffmanCodec.from_data(pixels)
-    encoded = codec.encode(pixels)
+    if img.ndim == 3 and img.shape[2] >= 3:
+        # separa os 3 canais (B, G, R) e comprime cada um
+        compressed_bits_total = 0
+
+        for c in range(3):
+            canal = img[:, :, c]
+            pixels = canal.flatten().tolist()
+
+            codec = HuffmanCodec.from_data(pixels)
+            encoded = codec.encode(pixels)
+
+            compressed_bits_total += len(encoded) * 8  # bytes -> bits
+
+        compressed_bits = compressed_bits_total
+
+    else:
+        # imagem 1 canal (grayscale/binária)
+        canal = img
+        pixels = canal.flatten().tolist()
+
+        codec = HuffmanCodec.from_data(pixels)
+        encoded = codec.encode(pixels)
+
+        compressed_bits = len(encoded) * 8  # bytes -> bits
 
     fim = time.perf_counter()
 
     tempo = fim - inicio
+    taxa_compressao = bits_original / compressed_bits if compressed_bits > 0 else np.nan
 
-    compressed_bits = len(encoded) * 8  # bytes → bits
-
-    taxa_compressao = bits_original / compressed_bits
-    bpp = compressed_bits / img.size
-    
     resultados.append({
         "Imagem": nomes[i],
         "Tempo (s)": tempo,
@@ -45,12 +72,12 @@ for nome in imagens:
         "Bits da Comprimida": compressed_bits,
         "Taxa de Compressão": taxa_compressao
     })
-    i+=1
-# Criar tabela final
+
+    i += 1
+
 df = pd.DataFrame(resultados)
 
-print("\nTabela Final:\n")
+print("\nTabela Final (Huffman):\n")
 print(df)
 
-# salvar CSV (opcional)
 df.to_csv(r"D:\carto\PDI2\TRABALHO02\tabelas\huffman_lena.csv", index=False)
