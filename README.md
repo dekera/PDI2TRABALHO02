@@ -1,37 +1,29 @@
----
+# Análise de Compressão de Imagens: Huffman e LZW
 
-# Análise Comparativa de Compressão de Imagens
+## Visão Geral
 
-## Implementação dos Métodos de Huffman e LZW
+Este projeto implementa e avalia dois algoritmos clássicos de compressão sem perdas:
 
----
+* Codificação de Huffman
+* Codificação LZW (Lempel–Ziv–Welch)
 
-## Descrição
+Além da comparação direta entre os métodos, foi realizado um estudo experimental sobre o impacto do tamanho máximo do dicionário no algoritmo LZW, variando de 9 a 30 bits.
 
-Este projeto apresenta a implementação e avaliação comparativa dos algoritmos de compressão sem perdas:
+A análise considera:
 
-* **Codificação de Huffman**
-* **Codificação LZW (Lempel-Ziv-Welch)**
-
-Os métodos foram aplicados a diferentes tipos de imagens digitais, com análise quantitativa baseada em:
-
-* Tempo de execução
-* Tamanho original (em bits)
-* Tamanho comprimido (em bits)
 * Taxa de compressão
+* Tempo de execução
+* Número de reinicializações do dicionário
+* Região de estabilização do algoritmo
 
 ---
 
-## Objetivo
+## Objetivos
 
-Avaliar o desempenho estatístico e computacional dos algoritmos de compressão em:
-
-1. Imagem RGB
-2. Imagem em escala de cinza
-3. Imagem binária
-4. Ortoimagem de alta resolução (`top_mosaic_09cm_area17.tif`)
-
-A comparação considera eficiência de compressão e custo computacional.
+* Implementar os algoritmos Huffman e LZW para diferentes tipos de imagens.
+* Comparar desempenho estatístico e computacional.
+* Avaliar a influência do tamanho máximo do dicionário no LZW.
+* Identificar o ponto de estabilização do algoritmo.
 
 ---
 
@@ -40,18 +32,19 @@ A comparação considera eficiência de compressão e custo computacional.
 ```
 TRABALHO02/
 │
-├── pixi.toml
-├── pixi.lock
 ├── .pixi/
+│   ├── envs/
+│   ├── pixi.toml
+│   └── pixi.lock
 │
 ├── codigos_area17/
 │   ├── d4huffman.py
 │   └── d4LZW.py
 │
 ├── codigos_lena/
+│   ├── d1_d2.py
 │   ├── d3huffman.py
-│   ├── d3LZW.py
-│   └── d1_d2.py
+│   └── d3LZW.py
 │
 ├── imagens_originais/
 │   ├── lena-Color.png
@@ -59,20 +52,26 @@ TRABALHO02/
 │
 ├── imagens_geradas/
 │   ├── lena_binaria.jpg
-│   └── lena_cinza.jpg
+│   ├── lena_cinza.jpg
+│   └── grafico_maxbits.png
 │
-└── tabelas/
-    ├── huffman_lena.csv
-    ├── lzw_lena.csv
-    ├── huffman_area17.csv
-    └── lzw_area17.csv
+├── tabelas/
+│   ├── huffman_area17.csv
+│   ├── huffman_lena.csv
+│   ├── lzw_area17.csv
+│   ├── lzw_lena.csv
+│   └── lzw_limite_9a30_area17.csv
+│
+└── testes/
+    ├── grafico.py
+    └── max_bits.py
 ```
 
 ---
 
 ## Ambiente
 
-O projeto utiliza ambiente isolado via **Pixi**.
+O projeto utiliza ambiente isolado gerenciado pelo Pixi.
 
 ### Ativação do ambiente
 
@@ -80,97 +79,105 @@ O projeto utiliza ambiente isolado via **Pixi**.
 pixi shell
 ```
 
-### Execução dos scripts
+### Execução dos códigos
+
+Huffman (Area17):
 
 ```bash
 pixi run python codigos_area17/d4huffman.py
+```
+
+LZW (Area17):
+
+```bash
 pixi run python codigos_area17/d4LZW.py
 ```
 
-Para os experimentos com a imagem Lena:
+Experimento do limite do dicionário (9–30 bits):
 
 ```bash
-pixi run python codigos_lena/d3huffman.py
-pixi run python codigos_lena/d3LZW.py
+pixi run python testes/max_bits.py
+```
+
+Geração do gráfico:
+
+```bash
+pixi run python testes/grafico.py
 ```
 
 ---
 
 ## Metodologia
 
-### Tratamento das Imagens RGB
+### Tratamento de Imagens RGB
 
-Para imagens RGB, a compressão é realizada **separadamente por canal (R, G, B)**.
+Para imagens RGB:
 
-A taxa final é obtida pela soma dos bits comprimidos de cada canal.
+* A compressão é aplicada separadamente em cada canal (R, G e B).
+* Os bits comprimidos são somados.
+* Considera-se 24 bits por pixel na imagem original.
 
-* RGB → 24 bits por pixel
-* Grayscale/Binária → 8 bits por pixel
+Para imagens em escala de cinza ou binárias:
 
-Essa abordagem preserva a coerência estatística, uma vez que cada canal possui distribuição própria.
+* Considera-se 8 bits por pixel.
 
 ---
 
 ## Métricas Avaliadas
 
-### 1️ Bits da Imagem Original
+### Bits da Imagem Original
 
-[
-Bits_{orig} = largura \times altura \times bpp
-]
+```
+Bits_original = largura × altura × bits_por_pixel
+```
 
----
-
-### 2️ Bits da Imagem Comprimida
+### Bits da Imagem Comprimida
 
 Total de bits produzidos pelo algoritmo.
 
----
+### Taxa de Compressão
 
-### 3️ Taxa de Compressão
+```
+Taxa = Bits_original / Bits_comprimida
+```
 
-[
-Taxa = Bits_original/Bits_{comprimida
-]
+### Tempo de Execução
 
-Interpretação:
+Medido utilizando:
 
-* Taxa > 1 → compressão efetiva
-* Taxa ≈ 1 → baixa eficiência
-* Taxa < 1 → expansão
-
----
-
-### 4️ Tempo de Execução
-
-Medido com:
-
-```python
+```
 time.perf_counter()
 ```
 
----
+### Quantidade de Reinicializações (LZW)
 
-##  Implementação dos Algoritmos
-
-###  Codificação de Huffman
-
-* Implementação baseada na biblioteca `dahuffman`.
-* Construção de árvore de prefixos a partir da frequência dos símbolos.
-* Compressão estatística ótima para códigos prefixados.
+Número de vezes que o dicionário foi reiniciado ao atingir o tamanho máximo permitido.
 
 ---
 
-### Codificação LZW
+## Estudo Experimental — Limite do Dicionário no LZW
 
-* Implementação própria.
-* Dicionário inicial com 256 símbolos.
-* Crescimento dinâmico do dicionário.
-* Cálculo do número mínimo de bits necessários por código.
+Foi realizado experimento variando:
+
+```
+max_bits ∈ [9, 30]
+```
+
+Principais observações:
+
+* 9–11 bits: expansão da imagem devido a alto número de reinicializações.
+* 12–20 bits: compressão crescente e redução significativa de resets.
+* 21 bits: primeiro ponto sem reinicialização.
+* 25 bits: menor tempo observado.
+* ≥21 bits: regime estacionário de compressão.
+
+Conclusão experimental:
+
+A partir de 21 bits o algoritmo deixa de reinicializar, entrando em regime estável. Acima desse ponto, o ganho marginal é reduzido.
 
 ---
 
-## Saídas
+## Resultados
 
 Os resultados são exportados em formato CSV na pasta:
 
@@ -178,29 +185,25 @@ Os resultados são exportados em formato CSV na pasta:
 /tabelas
 ```
 
-Formato das tabelas:
+O gráfico do experimento encontra-se em:
 
-| Imagem | Tempo (s) | Bits da Original | Bits da Comprimida | Taxa de Compressão |
-| ------ | --------- | ---------------- | ------------------ | ------------------ |
+```
+/imagens_geradas/grafico_maxbits.png
+```
 
 ---
 
 ## Fundamentação Teórica
 
-* Shannon, C. E. (1948). *A Mathematical Theory of Communication*.
-* Gonzalez, R. C., & Woods, R. E. — *Digital Image Processing*.
-* Welch, T. A. (1984). *A Technique for High-Performance Data Compression*.
+* Gonzalez, R. C.; Woods, R. E. Digital Image Processing.
 
 ---
 
-## Observações
+## Conclusões Técnicas
 
-* Não está sendo considerado o custo de armazenamento do dicionário/cabeçalho.
-* A implementação LZW não impõe limite fixo de bits (ex.: 12 bits).
-* Resultados podem variar conforme o conteúdo estatístico da imagem.
-
----
-
-Projeto desenvolvido para disciplina de Processamento Digital de Imagens 2.
+* O algoritmo Huffman apresenta comportamento estável para imagens naturais com alta variabilidade.
+* O desempenho do LZW depende fortemente do tamanho máximo do dicionário.
+* Ortoimagens de alta resolução exigem dicionários maiores para compressão eficiente.
+* O custo computacional é significativamente influenciado pelo número de reinicializações.
 
 ---
