@@ -94,7 +94,7 @@ for caminho in imagens:
     taxa_compressao = bits_original / compressed_bits if compressed_bits > 0 else np.nan
 
     resultados.append({
-        "Imagem": nomes[i],
+        "Lena": nomes[i],
         "Tempo (s)": tempo,
         "Bits da Original": bits_original,
         "Bits da Comprimida": compressed_bits,
