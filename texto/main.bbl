@@ -1,0 +1,23 @@
+\providecommand{\abntreprintinfo}[1]{%
+ \citeonline{#1}}
+\setlength{\labelsep}{0pt}\begin{thebibliography}{}
+\providecommand{\abntrefinfo}[3]{}
+\providecommand{\abntbstabout}[1]{}
+\abntbstabout{v-1.9.7 }
+
+\bibitem[Gonzalez e Woods 2010]{Gonzalez2010}
+\abntrefinfo{Gonzalez e Woods}{GONZALEZ; WOODS}{2010}
+{GONZALEZ, R.~C.; WOODS, R.~E. \emph{Processamento Digital de Imagens}. 3ª. ed. São Paulo: Pearson Prentice Hall, 2010.
+ISBN 978-85-7605-153-9.}
+
+\bibitem[Huffman 1952]{Huffman1952}
+\abntrefinfo{Huffman}{HUFFMAN}{1952}
+{HUFFMAN, D.~A. A method for the construction of minimum-redundancy codes.
+\emph{Proceedings of the IRE}, v.~40, n.~9, p. 1098--1101, 1952.}
+
+\bibitem[Welch 1984]{Welch1984}
+\abntrefinfo{Welch}{WELCH}{1984}
+{WELCH, T.~A. A technique for high-performance data compression.
+\emph{Computer}, v.~17, n.~6, p. 8--19, 1984.}
+
+\end{thebibliography}
