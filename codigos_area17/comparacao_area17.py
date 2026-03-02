@@ -15,8 +15,8 @@ df_huffman["Algoritmo"] = "Huffman"
 df_lzw["Algoritmo"] = "LZW"
 
 # Manter apenas colunas necessárias
-df_huffman = df_huffman[["Imagem", "Taxa de Compressão", "Algoritmo"]]
-df_lzw = df_lzw[["Imagem", "Taxa de Compressão", "Algoritmo"]]
+df_huffman = df_huffman[["Imagem", "Tempo (s)", "Algoritmo"]]
+df_lzw = df_lzw[["Imagem", "Tempo (s)", "Algoritmo"]]
 
 # Concatenar
 df_final = pd.concat([df_huffman, df_lzw], ignore_index=True)
@@ -28,12 +28,12 @@ plt.figure(figsize=(8, 5))
 sns.barplot(
     data=df_final,
     x="Imagem",
-    y="Taxa de Compressão",
+    y="Tempo (s)",
     hue="Algoritmo"
 )
 
-plt.title("Comparação da Taxa de Compressão - Area17")
-plt.ylabel("Taxa de Compressão")
+plt.title("Comparação do Tempo (s) - Area17")
+plt.ylabel("Tempo (s)")
 plt.legend(title="Algoritmo")
 
 plt.tight_layout()
