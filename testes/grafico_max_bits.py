@@ -19,7 +19,7 @@ sns.set_theme(style="whitegrid")
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
 
-# ===== Tempo =====
+# Tempo
 linha_tempo = ax1.plot(
     df["max_bits"],
     df["Tempo (s)"],
@@ -32,7 +32,7 @@ ax1.set_xlabel("Limite Máximo de Bits")
 ax1.set_ylabel("Tempo de Execução (s)")
 ax1.grid(True)
 
-# ===== Taxa =====
+# Taxa
 ax2 = ax1.twinx()
 
 linha_taxa = ax2.plot(
@@ -47,7 +47,7 @@ linha_taxa = ax2.plot(
 ax2.set_ylabel("Taxa de Compressão")
 ax2.grid(False)
 
-# ===== Destaques =====
+# Destaques
 ax1.scatter(
     min_row["max_bits"],
     min_row["Tempo (s)"],
@@ -68,7 +68,7 @@ ax1.scatter(
 
 plt.title("Tempo e Taxa de Compressão vs Limite Máximo de Bits (LZW)")
 
-# ===== Legenda =====
+# Legenda
 handles1, labels1 = ax1.get_legend_handles_labels()
 handles2, labels2 = ax2.get_legend_handles_labels()
 
