@@ -8,4 +8,9 @@
 *.fdb_latexmk
 *.fls
 *.log
-*.out
+*.out*.aux.xml
+*.log
+*.aux
+*.bbl
+*.synctex.gz
+*.pdf
