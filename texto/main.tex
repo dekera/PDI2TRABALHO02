@@ -91,7 +91,7 @@ Este trabalho foca na análise teórica e prática de dois dos mais influentes a
 \section*{2. Objetivos}
 \label{chap:objetivos}
 
-Este trabalho tem como propósito central investigar e avaliar, de forma quantitativa, a eficácia de algoritmos de compressão de imagens sem perdas. A análise comparativa de desempenho é realizada por meio da aplicação prática desses métodos em diferentes representações de imagem.
+Tem-se como propósito central investigar e avaliar, de forma quantitativa, a eficácia de algoritmos de compressão de imagens sem perdas. A análise comparativa de desempenho é realizada por meio da aplicação prática desses métodos em diferentes representações de imagem.
 
 \subsection*{2.1 Objetivo Geral}
 \label{sec:objetivo_geral}
@@ -105,7 +105,7 @@ Analisar e comparar o desempenho dos algoritmos de compressão de Huffman e Lemp
     
     \item Implementar códigos para pré-processar uma imagem colorida (Lena), gerando suas versões em níveis de cinza (pancromática) e binária (preto e branco) a partir de um limiar.
     
-    \item Aplicar os algoritmos de compressão (oHuffman e LZW) sobre o conjunto de imagens, incluindo as três versões da imagem Lena e a imagem específica designada ao grupo.
+    \item Aplicar os algoritmos de compressão (Huffman e LZW) sobre o conjunto de imagens, incluindo as três versões da imagem Lena e a imagem específica designada ao grupo.
     
     \item Avaliar e mensurar a performance dos algoritmos, coletando dados de taxa de compressão e tempo de execução para cada um dos testes realizados.
     
@@ -133,7 +133,7 @@ O sistema operacional utilizado foi o Microsoft Windows 11 (64 bits). O ambiente
 
 O trabalho foi dividido nas seguintes etapas: pré-processamento das imagens, a aplicação dos algoritmos de compressão e a subsequente análise de desempenho. A abordagem metodológica foi desenhada para garantir a reprodutibilidade e a clareza na comparação dos resultados.
 
-Cada script foi desenvolvido de forma modular e com um propósito específico. O primeiro script realiza o pré-processamento, gerando as versões em níveis de cinza e binária da imagem "Lena". Os quatro scripts subsequentes executam os algoritmos de compressão de Huffman e LZW sobre cada uma das imagens designadas (as três versões da "Lena" e a imagem específica do grupo). Ao final de cada execução, os resultados — tempo de processamento, tamanho original, tamanho comprimido e taxa de compressão — são sistematicamente coletados, organizados em tabelas com a biblioteca Pandas e salvos em arquivos no formato CSV para análise posterior.
+Cada script foi desenvolvido de forma modular e com um propósito específico. O primeiro script realiza o pré-processamento, gerando as versões em níveis de cinza e binária da imagem Lena. Os quatro scripts subsequentes executam os algoritmos de compressão de Huffman e LZW sobre cada uma das imagens designadas (as três versões da imagem Lena e a imagem específica do grupo). Ao final de cada execução, os resultados — tempo de processamento, tamanho original, tamanho comprimido e taxa de compressão — são sistematicamente coletados, organizados em tabelas com a biblioteca Pandas e salvos em arquivos no formato CSV para análise posterior.
 
 
 
@@ -199,17 +199,17 @@ As bibliotecas \texttt{dahuffman} e \texttt{pandas} foram centrais para a compre
 
 \subsection*{3.3 Imagens}
 
-Para a realização dos experimentos, foram empregadas duas imagens principais com características distintas.
+Inicialmente foram empregadas duas imagens distintas, a primeira, \textit{top\_mosaic\_09cm\_area17.tif}, é um arquivo no formato GeoTIFF, caracterizado como um dado raster de alta resolução. A imagem apresenta dimensões de 2336 pixels de largura por 1281 pixels de altura, com um tamanho em disco de aproximadamente 8,63 MB. Trata-se de uma imagem com profundidade radiométrica de 8 bits sem sinal (Byte), o que restringe os valores digitais de cada pixel ao intervalo de 0 a 255. A composição é formada por três bandas espectrais. A análise estatística indica que a Banda 1 apresenta a maior média de intensidade (143,11) e o maior desvio padrão (48,10). As Bandas 2 e 3 exibem médias de intensidade de 76,95 e 74,72, respectivamente. Observa-se que todas as bandas utilizam quase que integralmente a faixa dinâmica disponível, com valores máximos de 251, 252 e 253.
 
-A primeira imagem, \texttt{top\_mosaic\_09cm\_area17.tif}, é um arquivo no formato GeoTIFF, caracterizado como um dado raster de alta resolução. A imagem apresenta dimensões de 2336 pixels de largura por 1281 pixels de altura, com um tamanho em disco de aproximadamente 8,63 MB. Trata-se de uma imagem com profundidade radiométrica de 8 bits sem sinal (Byte), o que restringe os valores digitais de cada pixel ao intervalo de 0 a 255. A composição é formada por três bandas espectrais organizadas no modelo RGB (Vermelho, Verde e Azul). A análise estatística indica que a Banda 1 (Vermelho) apresenta a maior média de intensidade (143,11) e o maior desvio padrão (48,10). As Bandas 2 (Verde) e 3 (Azul) exibem médias de intensidade de 76,95 e 74,72, respectivamente. Observa-se que todas as bandas utilizam quase que integralmente a faixa dinâmica disponível, com valores máximos de 251, 252 e 253.
+A imagem \textit{lena-Color.png} é composta por três bandas espectrais no modelo RGB, todas com dados válidos (sem valores NoData). A Banda 1 (Vermelho) apresenta valores digitais variando entre 15 e 255; a Banda 2 (Verde) varia de 3 a 238; e a Banda 3 (Azul) varia de 0 a 255. Observa-se que as Bandas 1 e 3 utilizam integralmente o limite superior da faixa dinâmica disponível (255), enquanto a Banda 2 não atinge o valor máximo possível. Esses resultados confirmam que a imagem explora quase toda a faixa radiométrica de 8 bits (0–255). 
 
-A imagem \textit{lena-Color.png} é composta por três bandas espectrais no modelo RGB, todas com dados válidos (sem valores NoData). A Banda 1 (Vermelho) apresenta valores digitais variando entre 15 e 255; a Banda 2 (Verde) varia de 3 a 238; e a Banda 3 (Azul) varia de 0 a 255. Observa-se que as Bandas 1 e 3 utilizam integralmente o limite superior da faixa dinâmica disponível (255), enquanto a Banda 2 não atinge o valor máximo possível. Esses resultados confirmam que a imagem explora quase toda a faixa radiométrica de 8 bits (0–255). A referida imagem foi utilizada como base para a geração de duas outras versões através de pré-processamento: uma imagem pancromática (níveis de cinza) e uma imagem binária (preto e branco). A primeira, \texttt{lena\_cinza.jpg}, é a versão em níveis de cinza (pancromática), com um tamanho de 92 KB. Seus pixels variam entre os valores 10 e 243, com uma intensidade média de 94,82 e um desvio padrão de 44,80, indicando uma boa distribuição de tons ao longo da escala de cinza. A segunda, \texttt{lena\_binaria.jpg}, é a versão binária, com 72 KB. Esta imagem possui apenas dois valores de pixel: 0 (preto) e 255 (branco). A média de intensidade de 57,73 e o alto desvio padrão de 106,48 refletem a natureza de alto contraste da imagem, que foi gerada a partir de um limiar de 50\%. A simplicidade estatística desta imagem, com apenas dois símbolos, a torna um caso de teste particularmente interessante para avaliar a redundância de codificação.
+A referida imagem (\textit{lena-Color.png}) foi utilizada como base para a geração de duas outras versões através de pré-processamento: uma imagem pancromática (níveis de cinza) e uma imagem binária (preto e branco). A primeira, \texttt{lena\_cinza.jpg}, possui um tamanho de 92 KB, seus pixels variam entre os valores 10 e 243, com uma intensidade média de 94,82 e um desvio padrão de 44,80, indicando uma boa distribuição de tons ao longo da escala de cinza. A segunda, \texttt{lena\_binaria.jpg}, possui um tamanho em disco de 72 KB, com apenas dois valores de pixel: 0 (preto) e 255 (branco). A média de intensidade de 57,73 e o alto desvio padrão de 106,48 refletem a natureza de alto contraste da imagem, que foi gerada a partir de um limiar de 50\%. A simplicidade estatística desta imagem, com apenas dois símbolos, a torna um caso de teste particularmente interessante para avaliar a redundância de codificação.
 
 
 
 \section*{4. Fundamentação Teórica}
 
-Os algoritmos de compressão exploram as redundâncias presentes nos dados. Conforme Gonzalez e Woods, existem três tipos principais de redundância em imagens: a redundância de codificação, a redundância espacial e a redundância psicovisual (ou, como o autor adota, informações irrelevantes) \cite{Gonzalez2010}.
+Os algoritmos de compressão exploram as redundâncias presentes nos dados. Conforme Gonzalez e Woods, existem três tipos principais de redundância em imagens: a redundância de codificação, a redundância espacial e a redundância psicovisual (ou, como o autor nomeia, informações irrelevantes) \cite{Gonzalez2010}.
 
 Os métodos estudados, Huffman e LZW, são classificados como algoritmos de compressão sem perdas, permitindo que a imagem seja reconstruída após a descompressão, sendo matematicamente idêntica à original, bit a bit. Eles atuam primariamente sobre a redundância de codificação e, no caso do LZW, também sobre a redundância espacial.
 
@@ -229,13 +229,11 @@ O processo de geração dos códigos de Huffman pode ser descrito em duas etapas
     
     \item \textbf{Geração dos Códigos:}
     \begin{enumerate}
-        \item \textbf{Passo 4: Atribuição dos Códigos.} A árvore binária resultante é percorrida a partir da raiz em direção a cada folha. Convencionalmente, atribui-se o dígito '0' para a aresta que leva ao filho da esquerda e '1' para a aresta que leva ao filho da direita (ou vice-versa). O código de Huffman para um símbolo específico é a sequência de '0's e '1's encontrada no caminho da raiz até a folha correspondente àquele símbolo.
+        \item \textbf{Passo 4: Atribuição dos Códigos.} A árvore binária resultante é percorrida a partir da raiz em direção a cada folha. Convencionalmente, atribui-se o dígito 0 para a aresta que leva ao filho da esquerda e 1 para a aresta que leva ao filho da direita (ou vice-versa). O código de Huffman para um símbolo específico é a sequência de 0 e 1 encontrada no caminho da raiz até a folha correspondente àquele símbolo.
     \end{enumerate}
 \end{enumerate}
 
-Uma característica essencial dos códigos de Huffman é que eles são \textbf{prefixo-livres} (ou \textit{prefix codes}). Isso significa que nenhum código de um símbolo é o prefixo do código de outro símbolo. Essa propriedade garante que a decodificação seja unívoca e instantânea, pois ao ler o fluxo de bits comprimido, o decodificador sabe exatamente onde um código termina e o próximo começa, sem a necessidade de separadores. A Codificação de Huffman é ótima no sentido de que gera o código de menor comprimento médio possível para um dado conjunto de probabilidades.
-
-\subsection*{Algoritmo Lempel-Ziv-Welch (LZW)}
+\subsection*{4.2 Algoritmo Lempel-Ziv-Welch (LZW)}
 
 
 O algoritmo Lempel-Ziv-Welch (LZW) é uma técnica de compressão baseada em dicionário, desenvolvida por Terry Welch em 1984, como um aprimoramento dos algoritmos LZ77 e LZ78 de Jacob Ziv e Abraham Lempel \cite{Welch1984}. Diferente de Huffman, que é um método estático e requer uma análise prévia dos dados, o LZW é um método adaptativo: ele constrói o dicionário de sequências de símbolos dinamicamente, tanto durante a compressão quanto durante a descompressão.
@@ -247,7 +245,7 @@ O LZW é particularmente eficaz na exploração da redundância espacial, pois e
 
     \item \textbf{Processo de Compressão:} O algoritmo lê a sequência de pixels de entrada e a processa da seguinte forma:
     \begin{enumerate}
-        \item Uma variável, digamos \texttt{W}, é usada para armazenar a "sequência atual", que começa vazia ou com o primeiro pixel.
+        \item Uma variável, digamos \texttt{W}, é usada para armazenar a sequência atual, que começa vazia ou com o primeiro pixel.
         \item O algoritmo lê o próximo pixel, digamos \texttt{K}.
         \item Ele então verifica se a concatenação \texttt{W + K} (a sequência atual seguida do novo pixel) já existe no dicionário.
         \item \textbf{Se \texttt{W + K} existe no dicionário:} A sequência \texttt{W} é atualizada para se tornar \texttt{W + K}, e o algoritmo continua para o próximo pixel. Nenhuma saída é gerada neste passo.
@@ -267,16 +265,16 @@ O resultado é uma sequência de códigos. Como o dicionário cresce, esses cód
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section*{4. Resultados Obtidos e Análise}
+\section*{5. Resultados Obtidos e Análise}
 
 
 Neste capítulo, são apresentados e analisados os resultados quantitativos obtidos a partir da aplicação dos algoritmos de compressão de Huffman e LZW sobre o conjunto de imagens definido. 
 
-\subsection*{4.1 Pré-processamento da Imagem Lena}
+\subsection*{5.1 Pré-processamento da Imagem Lena}
 
 A primeira etapa do experimento consistiu no pré-processamento da imagem \texttt{lena-Color.png} para gerar suas versões em níveis de cinza e binária, conforme os procedimentos d.1 e d.2 da especificação do trabalho. A Figura \ref{fig:lena_geradas} apresenta as duas imagens resultantes que, juntamente com a versão colorida original, formam o primeiro conjunto de testes.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   % --- Primeira Subfigura ---
   \begin{subfigure}[b]{0.3\textwidth}
@@ -308,7 +306,7 @@ A primeira etapa do experimento consistiu no pré-processamento da imagem \textt
 \end{figure}
 
 
-\subsection*{4.2 Análise da Taxa de Compressão}
+\subsection*{5.2 Análise da Taxa de Compressão}
 
 A métrica primária para avaliar um algoritmo de compressão é sua capacidade de reduzir o tamanho dos dados, quantificada pela taxa de compressão. As Figuras \ref{fig:grafico_taxa_lena} e \ref{fig:grafico_taxa_area17} ilustram o desempenho de cada algoritmo nos diferentes conjuntos de imagens.
 
@@ -342,7 +340,7 @@ A imagem Area17, sendo uma imagem de sensoriamento remoto com texturas complexas
 
 Os resultados demonstram que o LZW é um algoritmo mais robusto e eficiente para a compressão de imagens sem perdas. Sua capacidade de explorar a correlação espacial entre pixels vizinhos lhe confere uma vantagem decisiva sobre o método puramente estatístico de Huffman, especialmente em imagens com qualquer grau de regularidade estrutural.
 
-\subsection*{4.3 Análise do Tempo de Execução}
+\subsection*{5.3 Análise do Tempo de Execução}
 \label{sec:analise_tempo}
 
 Além da taxa de compressão, o tempo de execução é uma métrica crucial para avaliar a eficiência computacional de um algoritmo. As Figuras \ref{fig:grafico_tempo_lena} e \ref{fig:grafico_tempo_area17} apresentam a comparação do tempo, em segundos, gasto por cada algoritmo para processar as imagens do estudo.
@@ -377,7 +375,7 @@ A Figura \ref{fig:grafico_tempo_area17} mostra que, para a imagem Area17, que po
 Em resumo, os resultados demonstram um claro \textit{trade-off} entre os dois métodos: o LZW oferece taxas de compressão superiores ao custo de um maior tempo de processamento, enquanto o Huffman se apresenta como uma alternativa mais rápida, embora geralmente menos eficiente em termos de compressão. A escolha entre um e outro dependeria, em uma aplicação prática, dos requisitos específicos do sistema, como a necessidade de compressão em tempo real versus a otimização máxima do armazenamento.
 
 
-\subsection*{4.4 Análise do Hiperparâmetro de Limite de Bits do LZW}
+\subsection*{5.4 Análise do Hiperparâmetro de Limite de Bits do LZW}
 
 Para aprofundar a compreensão do algoritmo LZW, foi conduzido um experimento variando o limite máximo de bits para os códigos do dicionário. Este parâmetro define o tamanho máximo que o dicionário pode atingir (um dicionário de $N$ bits pode ter até $2^N$ entradas). A análise busca encontrar um ponto ótimo que equilibre a taxa de compressão e o tempo de execução. Os resultados para a imagem Area17 e para a imagem Lena RGB são apresentados na Figura \ref{fig:graficos_lzw_bits}.
 
@@ -411,7 +409,7 @@ O ponto verde (21 bits) é destacado como o Primeiro sem reset. Isso sugere que,
 
 
 
-\section*{5. Conclusão}
+\section*{6. Conclusão}
 Este trabalho avaliou experimentalmente os algoritmos de compressão sem perdas de Huffman e LZW, comparando suas taxas de compressão e tempos de execução em diferentes tipos de imagem.
 
 Os resultados confirmaram a teoria: o algoritmo LZW alcançou taxas de compressão consistentemente superiores em todos os cenários, destacando-se em imagens com alta redundância espacial, como a binária. Esta eficiência, contudo, veio ao custo de um tempo de processamento significativamente maior.
