@@ -309,33 +309,39 @@ A primeira etapa do experimento consistiu no pré-processamento da imagem \textt
   \label{fig:lena_geradas}
 \end{figure}
 
-A imagem pancromática (Figura \ref{fig:lena_cinza}) preserva a maior parte da informação visual da imagem original, mas reduz a redundância entre canais de cor ao consolidar a informação de luminância em um único canal de 8 bits. Já a imagem binária (Figura \ref{fig:lena_binaria}) representa a maior simplificação dos dados: seu histograma contém apenas dois valores (0 e 255), maximizando a redundância de codificação.
+\subsection*{4.1 Análise do Tempo de Execução}
+\label{sec:analise_tempo}
 
-\section*{4.2 Análise de Desempenho na Imagem Lena}
-Para visualizar de forma clara o desempenho comparativo dos dois algoritmos, foi gerado um gráfico de barras que contrapõe as taxas de compressão obtidas para cada tipo de imagem. A Figura abaixo ilustra essa comparação.
+Além da taxa de compressão, o tempo de execução é uma métrica crucial para avaliar a eficiência computacional de um algoritmo. As Figuras \ref{fig:grafico_tempo_lena} e \ref{fig:grafico_tempo_area17} apresentam a comparação do tempo, em segundos, gasto por cada algoritmo para processar as imagens do estudo.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{comparacao_tx_compressao_lena.jpg} 
-    \caption{Gráfico comparativo da taxa de compressão dos algoritmos Huffman e LZW aplicados às três versões da imagem Lena.}
-    \label{fig:grafico_lena}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{tempo_lena.jpg} 
+        \caption{Tempo de compressão para as imagens Lena.}
+        \label{fig:grafico_tempo_lena}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{tempo_area17.jpg} 
+        \caption{Tempo de compressão para a imagem Area17.}
+        \label{fig:grafico_tempo_area17}
+    \end{subfigure}
+    \caption{Gráficos comparativos do tempo de execução (em segundos).}
+    \label{fig:graficos_tempo}
 \end{figure}
 
-A análise do gráfico permite extrair conclusões diretas e contundentes sobre a eficiência de cada método em função das características dos dados:
+A análise dos gráficos revela um padrão consistente e claro em todos os cenários de teste:
 
-\begin{enumerate}
-    \item \textbf{Superioridade do LZW em Imagens com Redundância Espacial:} Para os três tipos de imagem, o algoritmo LZW (barras em laranja) apresenta uma taxa de compressão superior à do Huffman (barras em azul). Nas imagens RGB e Pancromática, que possuem texturas e áreas de cor contínuas, o LZW demonstra sua vantagem ao explorar a \textbf{redundância espacial}. Ele identifica sequências de pixels recorrentes (padrões) e as substitui por códigos únicos, uma capacidade que o Huffman não possui, pois este opera apenas na frequência estatística de pixels individuais. Isso explica por que a taxa de compressão do LZW é consistentemente maior nessas duas categorias.
+O algoritmo LZW (barras em laranja) demonstrou ser significativamente mais lento que o Huffman (barras em azul) em todas as imagens testadas. O tempo de execução do LZW chegou a ser de 3 a 4 vezes maior que o do Huffman, tanto para as imagens Lena (Figura \ref{fig:grafico_tempo_lena}) quanto para a imagem de maior dimensão, Area17 (Figura \ref{fig:grafico_tempo_area17}).
 
-    \item \textbf{Desempenho Excepcional na Imagem Binária:} A diferença mais notável e expressiva ocorre na imagem binária. O gráfico mostra que a taxa de compressão do LZW é drasticamente superior à do Huffman, atingindo um valor próximo de 10 (ou até maior, dependendo dos dados exatos), enquanto o Huffman alcança uma taxa em torno de 5. A justificativa para essa disparidade gritante reside na combinação de dois fatores:
-    \begin{itemize}
-        \item \textbf{Redundância de Codificação Máxima:} A imagem binária possui a maior redundância de codificação possível, pois contém apenas dois símbolos (0 e 255) em um espaço que poderia ter 256. Ambos os algoritmos exploram isso. Huffman, por exemplo, pode representar cada pixel com apenas 1 bit.
-        \item \textbf{Redundância Espacial Extrema:} Mais importante ainda, a imagem binária é composta por grandes áreas contíguas de pixels idênticos (vastas regiões de preto ou branco). O LZW capitaliza imensamente sobre essa \textbf{redundância espacial extrema}. Seu dicionário é rapidamente populado com entradas para sequências muito longas de 0,0,0,... e 255,255,255,.... Consequentemente, blocos enormes da imagem são substituídos por um único código, resultando em uma compressão massiva que o Huffman, por analisar pixels isoladamente, não consegue igualar.
-    \end{itemize}
+Essa diferença de desempenho é uma consequência direta da lógica de funcionamento de cada algoritmo. A Codificação de Huffman, especialmente ao usar uma implementação otimizada, opera em duas fases principais: uma passagem para calcular a frequência dos símbolos e outra para realizar a substituição pelos códigos. É um processo estático e computacionalmente mais simples. Em contrapartida, o LZW realiza um processo dinâmico e mais complexo: para cada pixel (ou sequência de pixels), ele precisa realizar uma busca em um dicionário que está em constante crescimento. Essa operação de busca e inserção a cada passo torna o algoritmo inerentemente mais custoso em termos de processamento, justificando o maior tempo de execução.
 
-    \item \textbf{Compressão em Imagens Complexas vs. Simples:} O gráfico também valida a teoria de que a compressão é mais eficaz em dados com baixa entropia (mais previsíveis). As taxas de compressão para as imagens RGB e Pancromática são modestas (entre 1 e 2), pois elas contêm uma grande variedade de valores de pixels e texturas complexas. Em contrapartida, a imagem binária, por sua simplicidade e alta previsibilidade, permite taxas de compressão muito mais elevadas, como claramente demonstrado pelas barras significativamente mais altas nessa categoria.
-\end{enumerate}
+A Figura \ref{fig:grafico_tempo_area17} mostra que, para a imagem Area17, que possui dimensões maiores (2336x1281 pixels) em comparação com a Lena (512x512 pixels), o tempo de execução de ambos os algoritmos aumenta consideravelmente, como esperado. O LZW, em particular, levou mais de 8 segundos para processar a imagem, ressaltando que seu custo computacional escala com o tamanho dos dados de entrada.
 
-Em síntese, o gráfico comprova visualmente que, embora ambos os métodos sejam eficazes, o LZW é um algoritmo de propósito mais geral e poderoso para compressão de imagens, devido à sua habilidade de explorar tanto a redundância de codificação quanto, e principalmente, a redundância espacial. A performance na imagem binária serve como um caso de estudo exemplar para ilustrar o poder da codificação baseada em dicionário em dados com alta regularidade estrutural.
+Em resumo, os resultados demonstram um claro \textit{trade-off} entre os dois métodos: o LZW oferece taxas de compressão superiores ao custo de um maior tempo de processamento, enquanto o Huffman se apresenta como uma alternativa mais rápida, embora geralmente menos eficiente em termos de compressão. A escolha entre um e outro dependeria, em uma aplicação prática, dos requisitos específicos do sistema, como a necessidade de compressão em tempo real versus a otimização máxima do armazenamento.
 
 
 
