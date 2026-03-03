@@ -336,15 +336,11 @@ Em todos os casos de teste, o algoritmo LZW (barras em laranja) alcançou uma ta
 
 A disparidade mais significativa ocorre na imagem binária, onde a taxa de compressão do LZW é drasticamente maior. Este cenário de teste, com apenas dois valores de pixel e grandes áreas contíguas, maximiza a eficiência do LZW. Ele consegue mapear longas sequências de pixels idênticos para códigos únicos, resultando em uma compressão massiva. O Huffman também se beneficia da alta redundância de codificação, mas sua incapacidade de reconhecer a redundância espacial o impede de atingir o mesmo nível de performance.
 
+Um ponto adicional relevante na análise do Huffman para a imagem binária está relacionado à implementação via biblioteca dahuffman. Embora o símbolo de fim de sequência (\textit{EOF}) pareça, à primeira vista, acrescentar apenas alguns poucos bits ao final do fluxo codificado, no caso de uma imagem realmente binária (com apenas 0 e 255) ele tem um efeito estrutural mais importante: ele introduz um terceiro símbolo no alfabeto efetivo. Com apenas dois símbolos, a codificação de Huffman pode atingir o limite ideal de 1 bit por pixel (um bit para cada valor). Entretanto, ao adicionar o \textit{EOF}, a árvore de Huffman precisa acomodar três folhas, o que inevitavelmente faz com que pelo menos um dos símbolos de pixel passe a ter código com 2 bits. Assim, o impacto não se restringe a um adicional fixo no final do arquivo. Ele altera o comprimento médio dos códigos e, na prática, aumenta de forma significativa o tamanho comprimido quando o símbolo menos frequente (por exemplo, 255) aparece muitas vezes na imagem.
+
 A imagem Area17, sendo uma imagem de sensoriamento remoto com texturas complexas e variações de cor, apresenta taxas de compressão mais modestas para ambos os algoritmos, como esperado para dados de alta entropia. Ainda assim, o LZW mantém sua vantagem sobre o Huffman, alcançando uma taxa de compressão próxima a 1.5, enquanto o Huffman fica em torno de 1.1. Isso reforça que, mesmo em dados complexos, a habilidade do LZW de encontrar pequenos padrões espaciais resulta em uma melhor performance.
 
 Os resultados demonstram que o LZW é um algoritmo mais robusto e eficiente para a compressão de imagens sem perdas. Sua capacidade de explorar a correlação espacial entre pixels vizinhos lhe confere uma vantagem decisiva sobre o método puramente estatístico de Huffman, especialmente em imagens com qualquer grau de regularidade estrutural.
-
-
-
-
-
-
 
 \subsection*{4.3 Análise do Tempo de Execução}
 \label{sec:analise_tempo}
