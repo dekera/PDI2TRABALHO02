@@ -309,23 +309,62 @@ A primeira etapa do experimento consistiu no pré-processamento da imagem \textt
   \label{fig:lena_geradas}
 \end{figure}
 
-\subsection*{4.1 Análise do Tempo de Execução}
+
+\subsection*{4.2 Análise da Taxa de Compressão}
+
+A métrica primária para avaliar um algoritmo de compressão é sua capacidade de reduzir o tamanho dos dados, quantificada pela taxa de compressão. As Figuras \ref{fig:grafico_taxa_lena} e \ref{fig:grafico_taxa_area17} ilustram o desempenho de cada algoritmo nos diferentes conjuntos de imagens.
+
+\begin{figure}[ht!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{tx.compressao_lena.jpg}
+        \caption{Taxa de compressão para as imagens Lena.}
+        \label{fig:grafico_taxa_lena}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{tx.compressao_area17.png}
+        \caption{Taxa de compressão para a imagem Area17.}
+        \label{fig:grafico_taxa_area17}
+    \end{subfigure}
+    \caption{Gráficos comparativos da taxa de compressão.}
+    \label{fig:graficos_taxa}
+\end{figure}
+
+
+Em todos os casos de teste, o algoritmo LZW (barras em laranja) alcançou uma taxa de compressão superior à do Huffman (barras em azul). Isso é evidente tanto nas imagens Lena (Figura \ref{fig:grafico_taxa_lena}) quanto na imagem Area17 (Figura \ref{fig:grafico_taxa_area17}). A razão para essa superioridade reside na capacidade do LZW de explorar não apenas a \textbf{redundância de codificação}, mas também a \textbf{redundância espacial}, criando um dicionário de padrões de pixels recorrentes. O Huffman, por sua vez, limita-se a otimizar a codificação com base na frequência de pixels individuais, o que o torna inerentemente menos eficaz para imagens com texturas e áreas homogêneas.
+
+A disparidade mais significativa ocorre na imagem binária, onde a taxa de compressão do LZW é drasticamente maior. Este cenário de teste, com apenas dois valores de pixel e grandes áreas contíguas, maximiza a eficiência do LZW. Ele consegue mapear longas sequências de pixels idênticos para códigos únicos, resultando em uma compressão massiva. O Huffman também se beneficia da alta redundância de codificação, mas sua incapacidade de reconhecer a redundância espacial o impede de atingir o mesmo nível de performance.
+
+A imagem Area17, sendo uma imagem de sensoriamento remoto com texturas complexas e variações de cor, apresenta taxas de compressão mais modestas para ambos os algoritmos, como esperado para dados de alta entropia. Ainda assim, o LZW mantém sua vantagem sobre o Huffman, alcançando uma taxa de compressão próxima a 1.5, enquanto o Huffman fica em torno de 1.1. Isso reforça que, mesmo em dados complexos, a habilidade do LZW de encontrar pequenos padrões espaciais resulta em uma melhor performance.
+
+Os resultados demonstram que o LZW é um algoritmo mais robusto e eficiente para a compressão de imagens sem perdas. Sua capacidade de explorar a correlação espacial entre pixels vizinhos lhe confere uma vantagem decisiva sobre o método puramente estatístico de Huffman, especialmente em imagens com qualquer grau de regularidade estrutural.
+
+
+
+
+
+
+
+\subsection*{4.3 Análise do Tempo de Execução}
 \label{sec:analise_tempo}
 
 Além da taxa de compressão, o tempo de execução é uma métrica crucial para avaliar a eficiência computacional de um algoritmo. As Figuras \ref{fig:grafico_tempo_lena} e \ref{fig:grafico_tempo_area17} apresentam a comparação do tempo, em segundos, gasto por cada algoritmo para processar as imagens do estudo.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{tempo_lena.jpg} 
+        \includegraphics[width=\textwidth]{t.area17_tempo.png} 
         \caption{Tempo de compressão para as imagens Lena.}
         \label{fig:grafico_tempo_lena}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{tempo_area17.jpg} 
+        \includegraphics[width=\textwidth]{t.lena_tempo.png} 
         \caption{Tempo de compressão para a imagem Area17.}
         \label{fig:grafico_tempo_area17}
     \end{subfigure}
@@ -344,10 +383,49 @@ A Figura \ref{fig:grafico_tempo_area17} mostra que, para a imagem Area17, que po
 Em resumo, os resultados demonstram um claro \textit{trade-off} entre os dois métodos: o LZW oferece taxas de compressão superiores ao custo de um maior tempo de processamento, enquanto o Huffman se apresenta como uma alternativa mais rápida, embora geralmente menos eficiente em termos de compressão. A escolha entre um e outro dependeria, em uma aplicação prática, dos requisitos específicos do sistema, como a necessidade de compressão em tempo real versus a otimização máxima do armazenamento.
 
 
+\subsection*{4.4 Análise do Hiperparâmetro de Limite de Bits do LZW}
+
+Para aprofundar a compreensão do algoritmo LZW, foi conduzido um experimento variando o limite máximo de bits para os códigos do dicionário. Este parâmetro define o tamanho máximo que o dicionário pode atingir (um dicionário de $N$ bits pode ter até $2^N$ entradas). A análise busca encontrar um ponto ótimo que equilibre a taxa de compressão e o tempo de execução. Os resultados para a imagem Area17 e para a imagem Lena RGB são apresentados na Figura \ref{fig:graficos_lzw_bits}.
+
+\begin{figure}[ht!]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth} 
+        \centering
+        \includegraphics[width=\textwidth]{grafico_maxbits_area17.png}
+        \caption{Análise do LZW na imagem Area17.}
+        \label{fig:lzw_area17_bits}
+    \end{subfigure}
+    \hfill %
+    \begin{subfigure}[b]{0.48\textwidth} 
+        \centering
+        \includegraphics[width=\textwidth]{grafico_maxbits_lena.png} 
+        \caption{Análise do LZW na imagem Lena RGB.}
+        \label{fig:lzw_lena_bits}
+    \end{subfigure}
+    \caption{Gráficos de Tempo e Taxa de Compressão vs. Limite Máximo de Bits do dicionário LZW.}
+    \label{fig:graficos_lzw_bits}
+\end{figure}
+
+Os gráficos, que apresentam o tempo de execução (linha azul, eixo esquerdo) e a taxa de compressão (linha amarela), revelam uma relação de \textit{trade-off} complexa e crucial:
+A linha amarela em ambos os gráficos demonstra que a taxa de compressão aumenta com o limite de bits, até atingir um platô. Isso é esperado: um dicionário maior (permitido por mais bits) pode armazenar mais sequências de pixels, aumentando a probabilidade de encontrar e codificar padrões longos e recorrentes. No entanto, a partir de um certo ponto (em torno de 20-22 bits em ambos os casos), os ganhos se tornam marginais e a curva se estabiliza. Isso indica que o dicionário atingiu um tamanho suficiente para capturar a maioria dos padrões repetitivos da imagem, e aumentá-lo ainda mais não agrega novas sequências úteis.
+
+A linha azul revela um comportamento mais complexo para o tempo de execução. Inicialmente, aumentar o tamanho do dicionário \textit{reduz} o tempo de execução. Isso pode parecer contraintuitivo, mas ocorre porque, com um dicionário maior, o algoritmo consegue agrupar mais pixels em cada código emitido. Isso significa que menos operações de busca e emissão de código são necessárias para processar a imagem inteira, otimizando o processo.
+
+Após atingir um ponto mínimo, o tempo de execução começa a aumentar novamente. Nesta fase, o dicionário se torna tão grande que o custo computacional para buscar uma sequência dentro dele começa a superar os ganhos obtidos pelo agrupamento de pixels. A busca em uma estrutura de dados maior é inerentemente mais lenta, e esse custo passa a dominar o tempo total de processamento. O ponto vermelho em ambos os gráficos (25 bits) destaca o menor tempo de execução observado na faixa de maior compressão.
+
+O ponto verde (21 bits) é destacado como o Primeiro sem reset. Isso sugere que, com um dicionário de 21 bits, foi possível processar a imagem inteira sem que o dicionário ficasse cheio e precisasse ser reiniciado. Este é um ponto de grande interesse prático, pois representa o menor dicionário capaz de mapear toda a complexidade da imagem sem interrupções, oferecendo um excelente equilíbrio entre uma alta taxa de compressão e um tempo de execução próximo do ideal.
 
 
 
 \section*{5. Conclusão}
+Este trabalho avaliou experimentalmente os algoritmos de compressão sem perdas de Huffman e LZW, comparando suas taxas de compressão e tempos de execução em diferentes tipos de imagem.
+
+Os resultados confirmaram a teoria: o algoritmo LZW alcançou taxas de compressão consistentemente superiores em todos os cenários, destacando-se em imagens com alta redundância espacial, como a binária. Esta eficiência, contudo, veio ao custo de um tempo de processamento significativamente maior.
+
+Em contrapartida, a Codificação de Huffman se mostrou uma alternativa computacionalmente mais rápida e leve, embora com menor poder de compressão.
+
+Conclui-se que existe um \textit{trade-off} fundamental entre os dois métodos. A escolha ótima depende da prioridade da aplicação: LZW para máxima compressão de dados e Huffman para maior velocidade de processamento.
+
 
 
 \FloatBarrier
