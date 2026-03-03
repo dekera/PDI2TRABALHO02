@@ -2,3 +2,10 @@
 .pixi/*
 !.pixi/config.toml
 .DS_Store
+# ===== LaTeX (arquivos gerados) =====
+*.aux
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
