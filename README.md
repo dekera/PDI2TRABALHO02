@@ -25,47 +25,6 @@ A análise considera:
 * Avaliar a influência do tamanho máximo do dicionário no LZW.
 * Identificar o ponto de estabilização do algoritmo.
 
----
-
-## Estrutura do Projeto
-
-```
-TRABALHO02/
-│
-├── .pixi/
-│   ├── envs/
-│   ├── pixi.toml
-│   └── pixi.lock
-│
-├── codigos_area17/
-│   ├── d4huffman.py
-│   └── d4LZW.py
-│
-├── codigos_lena/
-│   ├── d1_d2.py
-│   ├── d3huffman.py
-│   └── d3LZW.py
-│
-├── imagens_originais/
-│   ├── lena-Color.png
-│   └── top_mosaic_09cm_area17.tif
-│
-├── imagens_geradas/
-│   ├── lena_binaria.jpg
-│   ├── lena_cinza.jpg
-│   └── grafico_maxbits.png
-│
-├── tabelas/
-│   ├── huffman_area17.csv
-│   ├── huffman_lena.csv
-│   ├── lzw_area17.csv
-│   ├── lzw_lena.csv
-│   └── lzw_limite_9a30_area17.csv
-│
-└── testes/
-    ├── grafico.py
-    └── max_bits.py
-```
 
 ---
 
